@@ -1,6 +1,10 @@
 package ru.skillbench.dateutil;
 
 public class DateUtil implements IDateUtil {
+    private static  String[] strDays =  { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
+            "Saturday", "Sunday" };
+    private static  String[] strMonths = {"January", "February", "March", "April",
+            "May", "June", "July", "August", "September", "October", "November", "December"};
 
     public boolean isLeapYear(int year) {
         boolean isLeap;
@@ -20,7 +24,7 @@ public class DateUtil implements IDateUtil {
         return isLeap;
     }
 
-    public  boolean isValidDate(int year, int month, int day) {
+    public boolean isValidDate(int year, int month, int day) {
 
         if (year > 10000 || year < 1000)
             return false;
@@ -44,7 +48,7 @@ public class DateUtil implements IDateUtil {
         return true;
     }
 
-    public  int getDayOfWeek(int year, int month, int day) {
+    public int getDayOfWeek(int year, int month, int day) {
         int num = 0;
         int dayName;
 
@@ -79,25 +83,39 @@ public class DateUtil implements IDateUtil {
         return dayName;
     }
 
-    @Override
-    public String toString(int year, int month, int day) {
-        String date = ("Day " + day + " Month " + month + " Year " + year);
-        return date;
+    public  String toString(int year, int month, int day) {
+        int dayOfWeek = getDayOfWeek(year, month, day);
+        String str = strDays[dayOfWeek];
+        String strMonth = strMonths[month-1];
+        return str + " " + day + " " + strMonth + " " + year;
     }
 
-    @Override
-    public int countDays(int year, int month, int day) {
-        int monthLength[] = {
-                31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
-        };
-        int days = 0;
-        if (isLeapYear(year) && month > 2) days += 1;
-        for (int i = 0; i < month - 1; i++) days += monthLength[i];
-        return days += day;
+    public  int countDays(int year, int month, int day) {
+        long dayinMillis = 24 * 60 * 60 * 1000;
+        long current = System.currentTimeMillis();
+        long leap = (year - 1970) / 4;
+        if (year % 4 == 3 || year % 4 == 2) {
+            leap--;
+        }
+        long days = ((year - 1970) * 365 + dayAtTheBeginningOfTheYear(month) + leap + day) * dayinMillis;
+        long diff = current - days;
+        long count = diff / dayinMillis;
+        return (int) count;
     }
-
-
-
-
-
+    public static int dayAtTheBeginningOfTheYear(int month) {
+        int sum = 0;
+        for (int i = 1; i < month; i++) {
+            sum += monthsday(i);
+        }
+        return sum;
+    }
+    public static int monthsday(int month) {
+        if (month == 4 || month == 6 || month == 9 || month == 11) {
+            return 30;
+        }
+        if (month == 2) {
+            return 28;
+        }
+        return 31;
+    }
 }
