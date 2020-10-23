@@ -102,14 +102,14 @@ public class DateUtil implements IDateUtil {
         long count = diff / dayinMillis;
         return (int) count;
     }
-    public static int dayAtTheBeginningOfTheYear(int month) {
+    public  int dayAtTheBeginningOfTheYear(int month) {
         int sum = 0;
         for (int i = 1; i < month; i++) {
             sum += monthsday(i);
         }
         return sum;
     }
-    public static int monthsday(int month) {
+    public  int monthsday(int month) {
         if (month == 4 || month == 6 || month == 9 || month == 11) {
             return 30;
         }
